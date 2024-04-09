@@ -3,10 +3,11 @@ import Timer from './components/Timer/Timer';
 import { SApp } from './assets/styles/app.styles';
 
 function App() {
+
     return (
-        <SApp>
-            <Timer></Timer>
-        </SApp>
+            <SApp>
+                <Timer />
+            </SApp>
     );
 }
 
