@@ -8,13 +8,9 @@ export const useReset = (time: TimeType, setTime: Function, setIsPlay: Function,
         setTimeout(() => {
             setTime(
                 time.map(objItem => {
-                    if (objItem.title === 'millSeconds') {
-                        return { ...objItem, value: 1000 };
-                    } else {
-                        return { ...objItem, value: 0 };
-                    }
+                    return { ...objItem, value: 0 };
                 })
             );
-        }, 10)
+        }, 10);
     }, [setIsPaused, setIsPlay, setTime, time]);
 };

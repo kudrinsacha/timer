@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { NumberInput } from '../UI/MyNumberInput';
+import { NumberInput } from '../UI/MyNumberInput/MyNumberInput';
 
 export const SCountdown = styled.div`
     display: flex;

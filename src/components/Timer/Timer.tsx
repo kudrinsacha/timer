@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Countdown from '../Countdown/Countdown';
+import MySlider from '../UI/MySlider/MySlider';
 import { useTimeout } from '../../hooks/useTimeout';
 import { useFormattedTime } from '../../hooks/useFormattedTime';
 import { usePlay } from '../../hooks/usePlay';
@@ -7,7 +8,7 @@ import { useStop } from '../../hooks/useStop';
 import { useContinue } from '../../hooks/useContinue';
 import { useReset } from '../../hooks/useReset';
 import { TimeType } from '../../models/Time';
-import { useAudio } from '../../hooks/useAudio';
+import { useSound } from '../../hooks/useSound';
 import {
     STimer,
     STimerBtnPlay,
@@ -17,17 +18,19 @@ import {
     STimerField,
     STimerTitle
 } from './Timer.styled';
+import { useSliderLimit } from '../../hooks/useSliderLimit';
 
 const Timer = () => {
     const [time, setTime] = useState<TimeType>([
         { title: 'minutes', value: 0 },
         { title: 'seconds', value: 0 },
-        { title: 'millSeconds', value: 1000 },
+        { title: 'millSeconds', value: 0 }
     ]);
 
     const [isPlay, setIsPlay] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
-    const [isFinishedTimer, setIsFinishedTimer] = useState(false)
+    const [isFinishedTimer, setIsFinishedTimer] = useState(false);
+    const [isSliderLimit, setIsSliderLimit] = useState(true);
 
     const playTimer = usePlay(time, setTime, setIsPlay);
 
@@ -41,7 +44,9 @@ const Timer = () => {
 
     useTimeout(time, setTime, isPlay, setIsPlay, isFinishedTimer, setIsFinishedTimer);
 
-    useAudio(isFinishedTimer, setIsFinishedTimer)
+    useSound(isFinishedTimer);
+
+    useSliderLimit(time, setIsSliderLimit)
 
     return (
         <STimer>
@@ -49,9 +54,11 @@ const Timer = () => {
                 <STimerTitle>Таймер</STimerTitle>
                 <STimerField>{formattedTime}</STimerField>
                 {!isPlay && <Countdown time={time} setTime={setTime} />}
+                {!isPlay && isSliderLimit
+                    && (<MySlider time={time} setTime={setTime} />)}
                 <STimerBtns>
                     {(isPlay || isPaused) && (
-                        <STimerBtnReset onClick={resetTimer} variant='outlined'>
+                        <STimerBtnReset onClick={resetTimer} variant="outlined">
                             Сбросить
                         </STimerBtnReset>
                     )}
@@ -62,18 +69,18 @@ const Timer = () => {
                                 time.find(timeObj => timeObj.title === 'seconds')?.value === 0
                             }
                             onClick={playTimer}
-                            variant='outlined'
+                            variant="outlined"
                         >
                             Запустить
                         </STimerBtnPlay>
                     )}
                     {isPlay && (
-                        <STimerBtnPlay onClick={stopTimer} variant='outlined'>
+                        <STimerBtnPlay onClick={stopTimer} variant="outlined">
                             Пауза
                         </STimerBtnPlay>
                     )}
                     {isPaused && (
-                        <STimerBtnPlay onClick={continueTimer} variant='outlined'>
+                        <STimerBtnPlay onClick={continueTimer} variant="outlined">
                             Возобновить
                         </STimerBtnPlay>
                     )}

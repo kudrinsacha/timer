@@ -8,7 +8,7 @@ const Countdown = (props: { time: TimeType; setTime: Function }) => {
             <SInput
                 placeholder='Минуты'
                 min={0}
-                max={720}
+                max={719}
                 value={props.time.find(timeObj => timeObj.title === 'minutes')?.value}
                 onChange={(e, newValue) => {
                     if (typeof newValue === 'number') {
