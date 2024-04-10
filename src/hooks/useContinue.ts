@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { TimeType } from '../models/Time';
 
-export const useContinue = (time: TimeType, setTime: Function, setIsPaused: Function, setIsPlay: Function) => {
+export const useContinue = (time: TimeType, setTime: Function, setIsPaused: Function, setIsPlay: Function, setTotalTime: Function) => {
     return useCallback(() => {
-        setIsPaused(false);
         setIsPlay(true);
+        setIsPaused(false);
         setTime(
             time.map((objTime) => {
                 if (objTime.title === 'millSeconds') {
@@ -13,5 +13,11 @@ export const useContinue = (time: TimeType, setTime: Function, setIsPaused: Func
                 return objTime;
             })
         )
+
+        const minutes = time.find(objTime => objTime.title === 'minutes')?.value;
+        const seconds = time.find(objTime => objTime.title === 'seconds')?.value;
+        if (typeof minutes === 'number' && typeof seconds === 'number') {
+            setTotalTime(minutes * 60 + seconds)
+        }
     }, [setIsPaused, setIsPlay, setTime, time]);
 };

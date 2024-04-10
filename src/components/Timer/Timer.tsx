@@ -19,6 +19,7 @@ import {
     STimerTitle
 } from './Timer.styled';
 import { useSliderLimit } from '../../hooks/useSliderLimit';
+import MyProgressBar from '../UI/MyProgressBar/MyProgressBar';
 
 const Timer = () => {
     const [time, setTime] = useState<TimeType>([
@@ -31,12 +32,13 @@ const Timer = () => {
     const [isPaused, setIsPaused] = useState(false);
     const [isFinishedTimer, setIsFinishedTimer] = useState(false);
     const [isSliderLimit, setIsSliderLimit] = useState(true);
+    const [totalTime, setTotalTime] = useState(0)
 
-    const playTimer = usePlay(time, setTime, setIsPlay);
+    const playTimer = usePlay(time, setTime, setIsPlay, setTotalTime);
 
     const stopTimer = useStop(setIsPlay, setIsPaused);
 
-    const continueTimer = useContinue(time, setTime, setIsPaused, setIsPlay);
+    const continueTimer = useContinue(time, setTime, setIsPaused, setIsPlay, setTotalTime);
 
     const resetTimer = useReset(time, setTime, setIsPlay, setIsPaused);
 
@@ -46,13 +48,15 @@ const Timer = () => {
 
     useSound(isFinishedTimer);
 
-    useSliderLimit(time, setIsSliderLimit)
+    useSliderLimit(time, setIsSliderLimit);
 
     return (
         <STimer>
             <STimerContainer>
                 <STimerTitle>Таймер</STimerTitle>
-                <STimerField>{formattedTime}</STimerField>
+                <MyProgressBar time={time} totalTime={totalTime} isPlay={isPlay}>
+                    <STimerField>{formattedTime}</STimerField>
+                </MyProgressBar>
                 {!isPlay && <Countdown time={time} setTime={setTime} />}
                 {!isPlay && isSliderLimit
                     && (<MySlider time={time} setTime={setTime} />)}
