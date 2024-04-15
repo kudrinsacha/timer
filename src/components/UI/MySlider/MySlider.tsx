@@ -1,8 +1,7 @@
 import React from 'react';
-import { TimeType } from '../../../models/Time';
 import { SSlider } from './MySlider.styles';
 
-const MySlider = (props: {time: TimeType, setTime: Function}) => {
+const MySlider = (props: { seconds: number, setSeconds: Function, minutes: number, setMinutes: Function }) => {
     const marks = [
         {
             value: 0,
@@ -27,33 +26,15 @@ const MySlider = (props: {time: TimeType, setTime: Function}) => {
     ];
 
     const sliderValueChange = (e: Event, newValue: number | number[]) => {
-        props.setTime(
-            props.time.map((objTime) => {
-                if (newValue < 60 && objTime.title === 'seconds' && typeof newValue === 'number') {
-                    return {...objTime, value: newValue}
-                } else if (typeof newValue === 'number') {
-                    const minutes = Math.floor(newValue / 60);
-                    if (objTime.title === 'seconds') {
-                        return {...objTime, value: newValue - (minutes * 60)}
-                    }
-                    if (objTime.title === 'minutes') {
-                        return {...objTime, value: minutes}
-                    }
-                }
-
-                return {...objTime}
-            })
-        )
-    }
+        if (typeof newValue === 'number') {
+            props.setSeconds(newValue - (Math.floor(newValue / 60) * 60));
+            props.setMinutes(Math.floor(newValue / 60));
+        }
+    };
 
     const valueSlider = () => {
-        const minutes = props.time.find(objTime => objTime.title === 'minutes')?.value
-        const seconds = props.time.find(objTime => objTime.title === 'seconds')?.value
-
-        if (typeof minutes === 'number' && typeof seconds === 'number') {
-            return minutes * 60 + seconds
-        }
-    }
+        return props.minutes * 60 + props.seconds;
+    };
 
     return (
         <SSlider
@@ -66,4 +47,4 @@ const MySlider = (props: {time: TimeType, setTime: Function}) => {
     );
 };
 
-export default MySlider;
+export default React.memo(MySlider);

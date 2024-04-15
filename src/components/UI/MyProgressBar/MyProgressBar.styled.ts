@@ -11,5 +11,5 @@ export const SProgress = styled(CircularProgress)``;
 
 export const SProgressValue = styled.div`
     position: absolute;
-    left: 25px;
+    left: 50px;
 `;

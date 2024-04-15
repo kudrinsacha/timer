@@ -1,25 +1,17 @@
 import React from 'react';
 import { SAdornment, SCountdown, SInput } from './Countdown.styled';
-import { TimeType } from '../../models/Time';
 
-const Countdown = (props: { time: TimeType; setTime: Function }) => {
+const Countdown = (props: {seconds: number, setSeconds: Function, minutes: number, setMinutes: Function}) => {
     return (
         <SCountdown>
             <SInput
                 placeholder='Минуты'
                 min={0}
                 max={719}
-                value={props.time.find(timeObj => timeObj.title === 'minutes')?.value}
+                value={props.minutes}
                 onChange={(e, newValue) => {
                     if (typeof newValue === 'number') {
-                        props.setTime(
-                            props.time.map(timeObj => {
-                                if (timeObj.title === 'minutes') {
-                                    return { ...timeObj, value: newValue };
-                                }
-                                return timeObj;
-                            })
-                        );
+                        props.setMinutes(newValue)
                     }
                 }}
                 startAdornment={<SAdornment>м</SAdornment>}
@@ -28,17 +20,10 @@ const Countdown = (props: { time: TimeType; setTime: Function }) => {
                 placeholder='Секунды'
                 min={0}
                 max={59}
-                value={props.time.find(timeObj => timeObj.title === 'seconds')?.value}
+                value={props.seconds}
                 onChange={(e, newValue) => {
                     if (typeof newValue === 'number') {
-                        props.setTime(
-                            props.time.map(timeObj => {
-                                if (timeObj.title === 'seconds') {
-                                    return { ...timeObj, value: newValue };
-                                }
-                                return timeObj;
-                            })
-                        );
+                        props.setSeconds(newValue)
                     }
                 }}
                 startAdornment={<SAdornment>с</SAdornment>}
@@ -47,4 +32,4 @@ const Countdown = (props: { time: TimeType; setTime: Function }) => {
     );
 };
 
-export default Countdown;
+export default React.memo(Countdown);

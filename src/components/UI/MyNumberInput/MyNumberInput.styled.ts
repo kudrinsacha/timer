@@ -9,7 +9,7 @@ export const StyledInputRoot = styled('div')(
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
-`,
+`
 );
 
 export const StyledInput = styled('input')(
@@ -39,9 +39,10 @@ export const StyledInput = styled('input')(
   }
 
   &:focus-visible {
+    
     outline: 0;
   }
-`,
+`
 );
 
 export const StyledButton = styled('button')(
@@ -79,5 +80,5 @@ export const StyledButton = styled('button')(
   &.increment {
     order: 1;
   }
-`,
+`
 );

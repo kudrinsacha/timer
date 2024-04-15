@@ -1,37 +1,33 @@
-import { useEffect, useState } from 'react';
-import { TimeType } from '../models/Time';
-import { changeValuesTimer } from '../utils/changeValuesTimer';
+import { useEffect } from 'react';
 
-export const useTimeout = (time: TimeType, setTime: Function, isPlay: boolean, setIsPlay: Function, isFinishedTimer: boolean, setIsFinishedTimer: Function) => {
-    const [isMillSecondsLimit, setIsMillSecondsLimit] = useState(false);
-    const [isSecondsLimit, setIsSecondsLimit] = useState(false);
-
+export const useTimeout = (millSeconds: number, setMillSeconds: Function, seconds: number, setSeconds: Function, minutes: number, setMinutes: Function, isPlay: boolean, setIsPlay: Function, setIsFinishedTimer: Function) => {
     useEffect(() => {
         if (isPlay) {
-            setTimeout(() => {
-                setTime(time.map(objTime => {
-                        return changeValuesTimer(
-                            objTime,
-                            isMillSecondsLimit,
-                            setIsMillSecondsLimit,
-                            isSecondsLimit,
-                            setIsSecondsLimit,
-                            setIsFinishedTimer,
-                            setIsPlay
-                        );
-                    })
-                );
+            const timer = setTimeout(() => {
+
+                if (seconds === 0 && minutes <= 0 && millSeconds <= 0) {
+                    setIsPlay(false);
+                    setIsFinishedTimer(true)
+                    setMillSeconds(1000)
+                }
+                if (seconds === 0 && minutes > 0 && millSeconds <= 0) {
+                    setMinutes(minutes - 1);
+                    setSeconds(59);
+                }
+
+                if (millSeconds > 0) {
+                    setMillSeconds(millSeconds - 10);
+                }
+                if (millSeconds <= 0 && seconds > 0) {
+                    setSeconds(seconds - 1);
+                    setMillSeconds(1000);
+                }
+                if (millSeconds <= 0) {
+                    setMillSeconds(1000);
+                }
             }, 10);
+
+            return () => clearTimeout(timer);
         }
-        if (isFinishedTimer) {
-            setIsFinishedTimer(false);
-            setTimeout(() => {
-                setTime(
-                    time.map(objTime => {
-                        return { ...objTime, value: 0 };
-                    })
-                );
-            }, 10);
-        }
-    }, [isFinishedTimer, isMillSecondsLimit, isPlay, isSecondsLimit, setIsPlay, setTime, time]);
+    }, [millSeconds]);
 };

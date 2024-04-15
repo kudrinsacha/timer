@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import Countdown from '../Countdown/Countdown';
 import MySlider from '../UI/MySlider/MySlider';
+import MyProgressBar from '../UI/MyProgressBar/MyProgressBar';
 import { useTimeout } from '../../hooks/useTimeout';
 import { useFormattedTime } from '../../hooks/useFormattedTime';
 import { usePlay } from '../../hooks/usePlay';
 import { useStop } from '../../hooks/useStop';
 import { useContinue } from '../../hooks/useContinue';
 import { useReset } from '../../hooks/useReset';
-import { TimeType } from '../../models/Time';
 import { useSound } from '../../hooks/useSound';
+import { useSliderLimit } from '../../hooks/useSliderLimit';
 import {
     STimer,
     STimerBtnPlay,
@@ -18,48 +19,44 @@ import {
     STimerField,
     STimerTitle
 } from './Timer.styled';
-import { useSliderLimit } from '../../hooks/useSliderLimit';
-import MyProgressBar from '../UI/MyProgressBar/MyProgressBar';
 
 const Timer = () => {
-    const [time, setTime] = useState<TimeType>([
-        { title: 'minutes', value: 0 },
-        { title: 'seconds', value: 0 },
-        { title: 'millSeconds', value: 0 }
-    ]);
+    const [millSeconds, setMillSeconds] = useState(1000);
+    const [seconds, setSeconds] = useState(0);
+    const [minutes, setMinutes] = useState(0);
 
     const [isPlay, setIsPlay] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [isFinishedTimer, setIsFinishedTimer] = useState(false);
     const [isSliderLimit, setIsSliderLimit] = useState(true);
-    const [totalTime, setTotalTime] = useState(0)
+    const [totalTime, setTotalTime] = useState(0);
 
-    const playTimer = usePlay(time, setTime, setIsPlay, setTotalTime);
+    const playTimer = usePlay(setMillSeconds, setIsPlay, setIsFinishedTimer, seconds, minutes, setTotalTime);
 
     const stopTimer = useStop(setIsPlay, setIsPaused);
 
-    const continueTimer = useContinue(time, setTime, setIsPaused, setIsPlay, setTotalTime);
+    const continueTimer = useContinue(setMillSeconds, setIsPaused, setIsPlay, seconds, minutes, totalTime, setTotalTime);
 
-    const resetTimer = useReset(time, setTime, setIsPlay, setIsPaused);
+    const resetTimer = useReset(setMillSeconds, setSeconds, setMinutes, setIsPlay, setIsPaused);
 
-    const formattedTime = useFormattedTime(time, isPlay, isPaused);
+    const formattedTime = useFormattedTime(millSeconds, seconds, minutes, isPlay);
 
-    useTimeout(time, setTime, isPlay, setIsPlay, isFinishedTimer, setIsFinishedTimer);
+    useTimeout(millSeconds, setMillSeconds, seconds, setSeconds, minutes, setMinutes, isPlay, setIsPlay, setIsFinishedTimer);
 
     useSound(isFinishedTimer);
 
-    useSliderLimit(time, setIsSliderLimit);
+    useSliderLimit(minutes, setIsSliderLimit);
 
     return (
         <STimer>
             <STimerContainer>
                 <STimerTitle>Таймер</STimerTitle>
-                <MyProgressBar time={time} totalTime={totalTime} isPlay={isPlay}>
-                    <STimerField>{formattedTime}</STimerField>
+                <MyProgressBar seconds={seconds} minutes={minutes} totalTime={totalTime} isPlay={isPlay} isPaused={isPaused}>
+                <STimerField>{formattedTime}</STimerField>
                 </MyProgressBar>
-                {!isPlay && <Countdown time={time} setTime={setTime} />}
+                {!isPlay && <Countdown seconds={seconds} setSeconds={setSeconds} minutes={minutes} setMinutes={setMinutes} />}
                 {!isPlay && isSliderLimit
-                    && (<MySlider time={time} setTime={setTime} />)}
+                    && (<MySlider seconds={seconds} setSeconds={setSeconds} minutes={minutes} setMinutes={setMinutes} />)}
                 <STimerBtns>
                     {(isPlay || isPaused) && (
                         <STimerBtnReset onClick={resetTimer} variant="outlined">
@@ -68,10 +65,7 @@ const Timer = () => {
                     )}
                     {!isPlay && !isPaused && (
                         <STimerBtnPlay
-                            disabled={
-                                time.find(timeObj => timeObj.title === 'minutes')?.value === 0 &&
-                                time.find(timeObj => timeObj.title === 'seconds')?.value === 0
-                            }
+                            disabled={minutes === 0 && seconds === 0}
                             onClick={playTimer}
                             variant="outlined"
                         >
