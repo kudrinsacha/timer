@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.js": "/timer/static/js/main.e39fb77d.js",
+    "main.js": "/timer/static/js/main.7ec895ff.js",
     "static/media/bruh.mp3": "/timer/static/media/bruh.cbdc182c96028bd4919f.mp3",
     "index.html": "/timer/index.html",
-    "main.e39fb77d.js.map": "/timer/static/js/main.e39fb77d.js.map"
+    "main.7ec895ff.js.map": "/timer/static/js/main.7ec895ff.js.map"
   },
   "entrypoints": [
-    "static/js/main.e39fb77d.js"
+    "static/js/main.7ec895ff.js"
   ]
 }
