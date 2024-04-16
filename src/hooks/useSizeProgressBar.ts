@@ -9,7 +9,7 @@ export const useSizeProgressBar = (time: number, isPlay: boolean) => {
                 return 270;
             }
         } else {
-            if (time > 6_000_000) {
+            if (time >= 6_000_000) {
                 return 220;
             } else {
                 return 200;
