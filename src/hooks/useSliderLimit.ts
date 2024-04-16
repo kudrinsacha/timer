@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
-export const useSliderLimit = (minutes: number, setIsSliderLimit: Function) => {
+export const useSliderLimit = (time: number, setIsSliderLimit: Function) => {
     useEffect(() => {
-        if (minutes > 60) {
+        if (time > 3_600_000) {
             setIsSliderLimit(false);
         } else {
             setIsSliderLimit(true);
         }
-    }, [minutes]);
+    }, [time]);
 };

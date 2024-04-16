@@ -20,50 +20,54 @@ import {
     STimerField,
     STimerTitle
 } from './Timer.styled';
+import { useFinishedTimer } from '../../hooks/useFinishedTimer';
+
+const INITIAL_VALUE_TIMER = 0;
+const INITIAL_TOTAL_TIME = 0;
+const INITIAL_IS_PLAY = false;
+const INITIAL_IS_PAUSED = false;
+const INITIAL_IS_FINISHED = false;
+const INITIAL_IS_SLIDER_LIMIT = true;
 
 const Timer = () => {
-    const [millSeconds, setMillSeconds] = useState(1000);
-    const [seconds, setSeconds] = useState(0);
-    const [minutes, setMinutes] = useState(0);
+    const [time, setTime] = useState(INITIAL_VALUE_TIMER);
+    const [totalTime, setTotalTime] = useState(INITIAL_TOTAL_TIME);
+    const [isPlay, setIsPlay] = useState(INITIAL_IS_PLAY);
+    const [isPaused, setIsPaused] = useState(INITIAL_IS_PAUSED);
+    const [isFinishedTimer, setIsFinishedTimer] = useState(INITIAL_IS_FINISHED);
+    const [isSliderLimit, setIsSliderLimit] = useState(INITIAL_IS_SLIDER_LIMIT);
 
-    const [totalTime, setTotalTime] = useState(0);
-
-    const [isPlay, setIsPlay] = useState(false);
-    const [isPaused, setIsPaused] = useState(false);
-    const [isFinishedTimer, setIsFinishedTimer] = useState(false);
-    const [isSliderLimit, setIsSliderLimit] = useState(true);
-
-    const playTimer = usePlay(setMillSeconds, setIsPlay);
+    const playTimer = usePlay(setIsPlay);
 
     const stopTimer = useStop(setIsPlay, setIsPaused);
 
-    const continueTimer = useContinue(setMillSeconds, setIsPaused, setIsPlay);
+    const continueTimer = useContinue(setIsPaused, setIsPlay);
 
-    const resetTimer = useReset(setMillSeconds, setSeconds, setMinutes, setIsPlay, setIsPaused, setTotalTime);
+    const resetTimer = useReset(setTime, setIsPlay, setIsPaused, setTotalTime);
 
-    const formattedTime = useFormattedTime(millSeconds, seconds, minutes, isPlay);
+    const formattedTime = useFormattedTime(time, isPlay);
 
-    useTimeout(millSeconds, setMillSeconds, seconds, setSeconds, minutes, setMinutes, isPlay, setIsPlay, setIsFinishedTimer, setTotalTime);
+    useTimeout(setTime, isPlay);
+
+    useFinishedTimer(time, setIsPlay, setIsFinishedTimer);
 
     useSound(isFinishedTimer, setIsFinishedTimer);
 
-    useSliderLimit(minutes, setIsSliderLimit);
+    useSliderLimit(time, setIsSliderLimit);
 
-    useTotalTime(seconds, minutes, totalTime, setTotalTime, isPlay);
+    useTotalTime(time, totalTime, setTotalTime, isPlay);
 
     return (
         <STimer>
             <STimerContainer>
                 <STimerTitle>Таймер</STimerTitle>
-                <ProgressBar seconds={seconds} minutes={minutes} totalTime={totalTime} isPlay={isPlay}
-                               isPaused={isPaused}>
+                <ProgressBar time={time} totalTime={totalTime} isPlay={isPlay} isPaused={isPaused}>
                     <STimerField>{formattedTime}</STimerField>
                 </ProgressBar>
                 {!isPlay &&
-                    <Countdown seconds={seconds} setSeconds={setSeconds} minutes={minutes} setMinutes={setMinutes} />}
+                    <Countdown time={time} setTime={setTime} />}
                 {!isPlay && isSliderLimit
-                    && (<Slider seconds={seconds} setSeconds={setSeconds} minutes={minutes}
-                                  setMinutes={setMinutes} />)}
+                    && (<Slider time={time} setTime={setTime} />)}
                 <STimerBtns>
                     {(isPlay || isPaused) && (
                         <STimerBtnReset onClick={resetTimer} variant="outlined">
@@ -72,7 +76,7 @@ const Timer = () => {
                     )}
                     {!isPlay && !isPaused && (
                         <STimerBtnPlay
-                            disabled={minutes === 0 && seconds === 0}
+                            disabled={time === 0}
                             onClick={playTimer}
                             variant="outlined"
                         >
@@ -85,7 +89,10 @@ const Timer = () => {
                         </STimerBtnPlay>
                     )}
                     {isPaused && (
-                        <STimerBtnPlay onClick={continueTimer} variant="outlined">
+                        <STimerBtnPlay
+                            disabled={time === 0}
+                            onClick={continueTimer}
+                            variant="outlined">
                             Возобновить
                         </STimerBtnPlay>
                     )}

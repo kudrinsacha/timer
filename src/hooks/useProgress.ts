@@ -1,13 +1,20 @@
 import { useEffect } from 'react';
 
-export const useProgress = (seconds: number, minutes: number, totalTime: number, isPlay: boolean, isPaused: boolean, setProgress: Function) => {
+export const useProgress = (time: number, totalTime: number, isPlay: boolean, isPaused: boolean, setProgress: Function) => {
     useEffect(() => {
-        if (isPlay) {
-            const currentTime = minutes * 60 + seconds;
-            setProgress((currentTime / totalTime) * 100);
+        if (isPlay && totalTime !== 0) {
+            const progressPercent = Math.floor((time / totalTime) * 100);
+
+            if (totalTime < 5000) {
+                if (progressPercent % 10 === 0) {
+                    setProgress(progressPercent);
+                }
+            } else {
+                setProgress(progressPercent);
+            }
         }
         if (!isPlay && !isPaused) {
-            setProgress(100)
+            setProgress(100);
         }
-    }, [seconds, isPlay, isPaused, totalTime]);
+    }, [time, isPlay, isPaused, totalTime]);
 };

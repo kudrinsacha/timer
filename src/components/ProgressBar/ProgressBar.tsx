@@ -3,18 +3,19 @@ import { useProgress } from '../../hooks/useProgress';
 import { useSizeProgressBar } from '../../hooks/useSizeProgressBar';
 import { SProgress, SProgressBar, SProgressValue } from './ProgressBar.styled';
 
+const INITIAL_PROGRESS_PERCENT = 100;
+
 const ProgressBar = (props: {
     children: React.ReactElement,
-    seconds: number,
-    minutes: number,
+    time: number,
     totalTime: number,
     isPlay: boolean,
     isPaused: boolean
 }) => {
-    const [progress, setProgress] = useState(100);
-    const size = useSizeProgressBar(props.minutes, props.isPlay);
+    const [progress, setProgress] = useState(INITIAL_PROGRESS_PERCENT);
+    const size = useSizeProgressBar(props.time, props.isPlay);
 
-    useProgress(props.seconds, props.minutes, props.totalTime, props.isPlay, props.isPaused, setProgress);
+    useProgress(props.time, props.totalTime, props.isPlay, props.isPaused, setProgress);
 
     return (
         <SProgressBar>

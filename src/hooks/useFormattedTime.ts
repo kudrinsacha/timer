@@ -1,14 +1,18 @@
 import { useMemo } from 'react';
 
-export const useFormattedTime = (millSeconds: number, seconds: number, minutes: number, isPlay: boolean) => {
+export const useFormattedTime = (time: number, isPlay: boolean) => {
     return useMemo(() => {
-        const newMillSeconds = millSeconds === 1000 ? millSeconds / 100 : millSeconds !== 1000 && millSeconds >= 100 ? millSeconds / 10 : '0' + millSeconds / 10;
-        const newSeconds = seconds < 10 ? '0' + seconds : seconds;
-        const newMinutes = minutes < 10 ? '0' + minutes : minutes;
+        const minutes = Math.floor(time / 60_000);
+        const seconds = Math.floor((time - minutes * 60_000) / 1000);
+        const millSeconds = (time - minutes * 60_000) - (seconds * 1000);
+
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+        const formattedMillSeconds = millSeconds === 0 ? '0' + millSeconds : millSeconds >= 100 ? millSeconds / 10 : millSeconds;
 
         if (isPlay) {
-            return `${newMinutes} : ${newSeconds} : ${newMillSeconds}`;
+            return `${formattedMinutes} : ${formattedSeconds} : ${formattedMillSeconds}`;
         }
-        return `${newMinutes} : ${newSeconds}`;
-    }, [millSeconds, seconds, minutes]);
+        return `${formattedMinutes} : ${formattedSeconds}`;
+    }, [time, isPlay]);
 };

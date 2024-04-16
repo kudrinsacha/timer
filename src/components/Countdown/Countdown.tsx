@@ -1,19 +1,25 @@
 import React, { useCallback } from 'react';
 import { SAdornment, SCountdown, SInput } from './Countdown.styled';
 
-const Countdown = (props: { seconds: number, setSeconds: Function, minutes: number, setMinutes: Function }) => {
+const MS_IN_SECONDS = 1000;
+const MS_IN_MINUTE = 60_000;
+
+const Countdown = (props: { time: number, setTime: Function }) => {
+
+    const minutes = Math.floor(props.time / MS_IN_MINUTE);
+    const seconds = Math.floor((props.time - minutes * MS_IN_MINUTE) / MS_IN_SECONDS);
 
     const minutesValueChange = useCallback((e: React.FocusEvent<HTMLInputElement> | React.PointerEvent | React.KeyboardEvent, newValue: number | null) => {
         if (typeof newValue === 'number') {
-            props.setMinutes(newValue);
+            props.setTime( (seconds * MS_IN_SECONDS) + (newValue * MS_IN_MINUTE) );
         }
-    }, []);
+    }, [props.time]);
 
     const secondsValueChange = useCallback((e: React.FocusEvent<HTMLInputElement> | React.PointerEvent | React.KeyboardEvent, newValue: number | null) => {
         if (typeof newValue === 'number') {
-            props.setSeconds(newValue);
+            props.setTime( (minutes * MS_IN_MINUTE) + (newValue * MS_IN_SECONDS) );
         }
-    }, []);
+    }, [props.time]);
 
     return (
         <SCountdown>
@@ -21,7 +27,7 @@ const Countdown = (props: { seconds: number, setSeconds: Function, minutes: numb
                 placeholder="Минуты"
                 min={0}
                 max={719}
-                value={props.minutes}
+                value={minutes}
                 onChange={minutesValueChange}
                 startAdornment={<SAdornment>м</SAdornment>}
             />
@@ -29,7 +35,7 @@ const Countdown = (props: { seconds: number, setSeconds: Function, minutes: numb
                 placeholder="Секунды"
                 min={0}
                 max={59}
-                value={props.seconds}
+                value={seconds}
                 onChange={secondsValueChange}
                 startAdornment={<SAdornment>с</SAdornment>}
             />
