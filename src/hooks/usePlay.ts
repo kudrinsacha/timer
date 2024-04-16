@@ -1,10 +1,8 @@
 import { useCallback } from 'react';
 
-export const usePlay = (setMillSeconds: Function, setIsPlay: Function, setIsFinishedTimer: Function, seconds: number, minutes: number, setTotalTime: Function) => {
+export const usePlay = (setMillSeconds: Function, setIsPlay: Function) => {
     return useCallback(() => {
         setIsPlay(true);
         setMillSeconds(990);
-        setIsFinishedTimer(false);
-        setTotalTime(minutes * 60 + seconds);
-    }, [minutes, seconds]);
+    }, []);
 };

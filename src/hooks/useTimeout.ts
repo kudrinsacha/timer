@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export const useTimeout = (millSeconds: number, setMillSeconds: Function, seconds: number, setSeconds: Function, minutes: number, setMinutes: Function, isPlay: boolean, setIsPlay: Function, setIsFinishedTimer: Function) => {
+export const useTimeout = (millSeconds: number, setMillSeconds: Function, seconds: number, setSeconds: Function, minutes: number, setMinutes: Function, isPlay: boolean, setIsPlay: Function, setIsFinishedTimer: Function, setTotalTime: Function) => {
     useEffect(() => {
         if (isPlay) {
             const timer = setTimeout(() => {
@@ -8,6 +8,7 @@ export const useTimeout = (millSeconds: number, setMillSeconds: Function, second
                 if (seconds === 0 && minutes <= 0 && millSeconds <= 0) {
                     setIsPlay(false);
                     setIsFinishedTimer(true)
+                    setTotalTime(0)
                     setMillSeconds(1000)
                 }
                 if (seconds === 0 && minutes > 0 && millSeconds <= 0) {

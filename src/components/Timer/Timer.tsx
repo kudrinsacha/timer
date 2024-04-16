@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Countdown from '../Countdown/Countdown';
-import MySlider from '../UI/MySlider/MySlider';
-import MyProgressBar from '../UI/MyProgressBar/MyProgressBar';
+import Slider from '../Slider/Slider';
+import ProgressBar from '../ProgressBar/ProgressBar';
 import { useTimeout } from '../../hooks/useTimeout';
 import { useFormattedTime } from '../../hooks/useFormattedTime';
 import { usePlay } from '../../hooks/usePlay';
@@ -10,6 +10,7 @@ import { useContinue } from '../../hooks/useContinue';
 import { useReset } from '../../hooks/useReset';
 import { useSound } from '../../hooks/useSound';
 import { useSliderLimit } from '../../hooks/useSliderLimit';
+import { useTotalTime } from '../../hooks/useTotalTime';
 import {
     STimer,
     STimerBtnPlay,
@@ -25,38 +26,44 @@ const Timer = () => {
     const [seconds, setSeconds] = useState(0);
     const [minutes, setMinutes] = useState(0);
 
+    const [totalTime, setTotalTime] = useState(0);
+
     const [isPlay, setIsPlay] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [isFinishedTimer, setIsFinishedTimer] = useState(false);
     const [isSliderLimit, setIsSliderLimit] = useState(true);
-    const [totalTime, setTotalTime] = useState(0);
 
-    const playTimer = usePlay(setMillSeconds, setIsPlay, setIsFinishedTimer, seconds, minutes, setTotalTime);
+    const playTimer = usePlay(setMillSeconds, setIsPlay);
 
     const stopTimer = useStop(setIsPlay, setIsPaused);
 
-    const continueTimer = useContinue(setMillSeconds, setIsPaused, setIsPlay, seconds, minutes, totalTime, setTotalTime);
+    const continueTimer = useContinue(setMillSeconds, setIsPaused, setIsPlay);
 
-    const resetTimer = useReset(setMillSeconds, setSeconds, setMinutes, setIsPlay, setIsPaused);
+    const resetTimer = useReset(setMillSeconds, setSeconds, setMinutes, setIsPlay, setIsPaused, setTotalTime);
 
     const formattedTime = useFormattedTime(millSeconds, seconds, minutes, isPlay);
 
-    useTimeout(millSeconds, setMillSeconds, seconds, setSeconds, minutes, setMinutes, isPlay, setIsPlay, setIsFinishedTimer);
+    useTimeout(millSeconds, setMillSeconds, seconds, setSeconds, minutes, setMinutes, isPlay, setIsPlay, setIsFinishedTimer, setTotalTime);
 
-    useSound(isFinishedTimer);
+    useSound(isFinishedTimer, setIsFinishedTimer);
 
     useSliderLimit(minutes, setIsSliderLimit);
+
+    useTotalTime(seconds, minutes, totalTime, setTotalTime, isPlay);
 
     return (
         <STimer>
             <STimerContainer>
                 <STimerTitle>Таймер</STimerTitle>
-                <MyProgressBar seconds={seconds} minutes={minutes} totalTime={totalTime} isPlay={isPlay} isPaused={isPaused}>
-                <STimerField>{formattedTime}</STimerField>
-                </MyProgressBar>
-                {!isPlay && <Countdown seconds={seconds} setSeconds={setSeconds} minutes={minutes} setMinutes={setMinutes} />}
+                <ProgressBar seconds={seconds} minutes={minutes} totalTime={totalTime} isPlay={isPlay}
+                               isPaused={isPaused}>
+                    <STimerField>{formattedTime}</STimerField>
+                </ProgressBar>
+                {!isPlay &&
+                    <Countdown seconds={seconds} setSeconds={setSeconds} minutes={minutes} setMinutes={setMinutes} />}
                 {!isPlay && isSliderLimit
-                    && (<MySlider seconds={seconds} setSeconds={setSeconds} minutes={minutes} setMinutes={setMinutes} />)}
+                    && (<Slider seconds={seconds} setSeconds={setSeconds} minutes={minutes}
+                                  setMinutes={setMinutes} />)}
                 <STimerBtns>
                     {(isPlay || isPaused) && (
                         <STimerBtnReset onClick={resetTimer} variant="outlined">

@@ -9,5 +9,5 @@ export const useProgress = (seconds: number, minutes: number, totalTime: number,
         if (!isPlay && !isPaused) {
             setProgress(100)
         }
-    }, [seconds, isPlay, isPaused]);
+    }, [seconds, isPlay, isPaused, totalTime]);
 };

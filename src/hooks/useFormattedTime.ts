@@ -10,5 +10,5 @@ export const useFormattedTime = (millSeconds: number, seconds: number, minutes: 
             return `${newMinutes} : ${newSeconds} : ${newMillSeconds}`;
         }
         return `${newMinutes} : ${newSeconds}`;
-    }, [millSeconds, seconds, minutes, isPlay]);
+    }, [millSeconds, seconds, minutes]);
 };

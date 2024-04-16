@@ -5,9 +5,9 @@ import { SApp } from './assets/styles/app.styles';
 function App() {
 
     return (
-            <SApp>
-                <Timer />
-            </SApp>
+        <SApp>
+            <Timer />
+        </SApp>
     );
 }
 
